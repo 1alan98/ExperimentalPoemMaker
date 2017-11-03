@@ -1,0 +1,20 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// The GUI component to ExperimentalPoemMaker.
+
+public class ExperimentalPoemMakerGUI {
+	
+	public static void main(String[] args) throws FileNotFoundException {
+		ExperimentalPoemMaker poemMaker = new ExperimentalPoemMaker();  
+		System.out.println("How many poems would you like made?");
+		Scanner input = new Scanner(System.in);
+		int num = input.nextInt();
+		// A num amount of experimental poems are printed
+		for (int i = 0; i < num; i++) {
+			poemMaker.printPoem();
+		}		
+	}
+}
