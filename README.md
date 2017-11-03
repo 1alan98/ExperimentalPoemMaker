@@ -13,4 +13,7 @@ to capture while making this progam. I hope you enjoy!
 Best,
 Alan
 
-Quick note: ExperimentalPoemMaker requires the use of my fork of Datamuse4J, also found in my profile.
+Quick notes: 
+ExperimentalPoemMaker requires the use of my fork of Datamuse4J, also found in my profile.
+I am also currently in the process of adding a GUI component. This will be ExperimentalPoemMakerGUI. Currently
+ExperimentalPoemMakerGUI and ExperimentalPoemMaker take all input and output to and from the console.
