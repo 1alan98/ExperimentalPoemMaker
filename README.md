@@ -10,6 +10,7 @@ rhyme in this case). Most of the poems that ExperimentalPoem maker creates don't
 sense out of them. Humans make progress when we try to make sense of that we don't understand and that's something I tried 
 to capture while making this progam. I hope you enjoy!
 
-- Alan
+Best,
+Alan
 
 Quick note: ExperimentalPoemMaker requires the use of my fork of Datamuse4J, also found in my profile.
