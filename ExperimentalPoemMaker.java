@@ -8,46 +8,43 @@ import datamuse.*;
 
 public class ExperimentalPoemMaker {
 
-	public static void main(String[] args) throws FileNotFoundException {
-      Scanner input = new Scanner(System.in);
-      System.out.print("Enter file name: ");
-      File poemsFile = new File(input.next());
-      // Runs until user gives a valid file name
-      while (!poemsFile.isFile()) { 
-         System.out.println(poemsFile.getName() + " is not a valid filename.");
-         System.out.print("Enter file name: ");
-         poemsFile = new File(input.next());
-      }
+	ArrayList<String> dictionary;
+	DatamuseQuery wordData;
+
+	public ExperimentalPoemMaker() throws FileNotFoundException {
+		wordData = new DatamuseQuery();
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter file name: ");
+		File poemsFile = new File(input.next());
+		// Runs until user gives a valid file name
+		while (!poemsFile.isFile()) { 
+			System.out.println(poemsFile.getName() + " is not a valid filename.");
+			System.out.print("Enter file name: ");
+			poemsFile = new File(input.next());
+		}
 		Scanner text = new Scanner(poemsFile);
 		// a dictionary with the words found in poemsFile is made 
-		ArrayList<String> dictionary = getWords(text);
-		System.out.println("How many poems would you like made?");
-		int num = input.nextInt();
-		// A num amount of experimental poems are printed
-		for (int i = 0; i < num; i++) {
-			printPoem(dictionary);
-		}		
+		dictionary = getWords(text);
 	}
 
 	// Returns an ArrayList of the words found in the given text
 	// If a word is found multiple times in the given text,
 	// then the returned list will contain the same number of 
 	// instances of the said word
-	public static ArrayList<String> getWords(Scanner text) {
+	public ArrayList<String> getWords(Scanner text) {
 		ArrayList<String> dictionary = new ArrayList<String>();
 		while (text.hasNext()) {
 			dictionary.add(text.next());
 		}
-	    return dictionary;
+		return dictionary;
 	}
-	
+
 	// Makes and prints an 8 line poem made with the given dictionary
 	// The poem has 2 stanzas, an abab rhyming pattern, and alternates
 	// between 8 and 6 syllables
-	public static void printPoem(ArrayList<String> dictionary) {
+	public void printPoem() {
 		Random r = new Random();
 		// Used to find the # of syllables in words and if words rhyme
-		DatamuseQuery wordData = new DatamuseQuery();
 		// the last words in each line
 		Stack<String> lastWords = new Stack<String>();
 		for (int i = 0; i < 8; i++) {
@@ -74,40 +71,7 @@ public class ExperimentalPoemMaker {
 				// Test checks if the current word is the last word of the line and checks
 				// its the 3rd or 4th stanza
 				if (syllables == 8 - i % 2 * 2 && i % 4 >= 2) {
-					// takes of the word from the previous line and stores it in temp variable
-					String prevWord = lastWords.pop();
-					// looks at the value of the last word two lines ago
-					String rhymeWith = lastWords.peek();
-					Set<String> rhymes = wordData.getRhymes(rhymeWith);
-					// no true rhymes
-					if (rhymes == null) {
-						wordData.getNearRhymes(rhymeWith);
-					}
-					// no near rhymes either so the originally chosen word is going to 
-					// be used even though it doesn't rhyme, OR the original word is one of
-					// the rhyming words so it will be used
-					if (rhymes == null || rhymes.contains(dictionary.get(wordIndex))) {
-						lastWords.push(prevWord);
-						lastWords.push(dictionary.get(wordIndex));
-						line = " " + dictionary.get(wordIndex) + line;
-					} else {
-						// Looks through all the rhyming words to find a match
-						String word = dictionary.get(wordIndex);
-						for (String curWord : rhymes) {
-							try {
-								// if curWord has the correct number of syllables, and if curWord is found
-								// in the dictionary then curWord will be the used word
-								if (Integer.parseInt(wordData.syllables(curWord)) == curSyllables &&
-									dictionary.contains(curWord)) {
-									word = curWord;
-								}
-							} catch (NumberFormatException e) {} // cur word isn't in wordData, will be used anyways 
-						}
-						// puts prevWord back into the stack and adds the new "word"
-						lastWords.push(prevWord);
-						lastWords.push(word);
-						line = " " + word + line;
-					}
+					line = " " + findWordThatRhymes(lastWords, dictionary.get(wordIndex), curSyllables);
 				} else if (syllables == 8 - i % 2 * 2) {
 					// not the 3rd or 4th stanza, but this is the last word
 					// so it needs to be taken track of for future reference
@@ -124,7 +88,47 @@ public class ExperimentalPoemMaker {
 			if (i == 3) {
 				System.out.println();
 			}
-					
+
 		}
+	}
+	
+	// Searches and returns for a word that rhymes with the second to last word in lastWords
+	// with the same amount of syllables as currentWord. If no such word is found, then 
+	// currentWord is returned
+	private String findWordThatRhymes(Stack<String> lastWords, String currentWord, int syllables) {
+		// takes of the word from the previous line and stores it in temp variable
+		String prevWord = lastWords.pop();
+		// looks at the value of the last word two lines ago
+		String rhymeWith = lastWords.peek();
+		Set<String> rhymes = wordData.getRhymes(rhymeWith);
+		// no true rhymes
+		if (rhymes == null) {
+			wordData.getNearRhymes(rhymeWith);
+		}
+		// no near rhymes either so the originally chosen word is going to 
+		// be used even though it doesn't rhyme, OR the original word is one of
+		// the rhyming words so it will be used
+		if (rhymes == null || rhymes.contains(currentWord)) {
+			lastWords.push(prevWord);
+			lastWords.push(currentWord);
+			return currentWord;
+			//line = " " + currentWord + line;
+		}
+		// Looks through all the rhyming words to find a match
+		String word = currentWord;
+		for (String curWord : rhymes) {
+			try {
+				// if curWord has the correct number of syllables, and if curWord is found
+				// in the dictionary then curWord will be the used word
+				if (Integer.parseInt(wordData.syllables(curWord)) == syllables &&
+						dictionary.contains(curWord)) {
+					word = curWord;
+				}
+			} catch (NumberFormatException e) {} // cur word isn't in wordData, will be used anyways 
+		}
+		// puts prevWord back into the stack and adds the new "word"
+		lastWords.push(prevWord);
+		lastWords.push(word);
+		return word;
 	}
 }
