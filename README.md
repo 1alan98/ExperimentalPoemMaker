@@ -1,6 +1,6 @@
 # ExperimentalPoemMaker
 
-I made this program for an experimental poetry class assigments. I was to make an experimental poem using any method I could
+I made this program as an experimental poetry class assigment. I was to make an experimental poem using any method I could
 think of, so I decided to write a program that would do it for me. Quick note, ExperimentalPoemMaker requires the use of 
 my fork of Datamuse4J, also found in my profile.
 
