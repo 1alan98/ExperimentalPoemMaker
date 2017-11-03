@@ -1,8 +1,7 @@
 # ExperimentalPoemMaker
 
-I made this program as an experimental poetry class assigment. I was to make an experimental poem using any method I could
-think of, so I decided to write a program that would do it for me. Quick note, ExperimentalPoemMaker requires the use of 
-my fork of Datamuse4J, also found in my profile.
+I made this program for experimental poetry class. I was assigned to make an experimental poem using any method I could
+think of, so I decided to write a program that would do it for me. 
 
 Basically, ExperimentalPoemMaker is able to extract the words found in a given piece of text. The extracted words are then
 pieced together at random to make a poem. The last words of the 3rd, 4th, 7th, and 8th stanza are not truly random since
@@ -12,3 +11,5 @@ sense out of them. Humans make progress when we try to make sense of that we don
 to capture while making this progam. I hope you enjoy!
 
 - Alan
+
+Quick note: ExperimentalPoemMaker requires the use of my fork of Datamuse4J, also found in my profile.
