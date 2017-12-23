@@ -103,13 +103,13 @@ public class ExperimentalPoemMaker {
 		String rhymeWith = lastWords.peek();
 		Set<String> rhymes = wordData.getRhymes(rhymeWith);
 		// no true rhymes
-		if (rhymes == null) {
+		if (rhymes.contains(null)) { //NTS: fix word data so I can use .isEmpty() instead
 			wordData.getNearRhymes(rhymeWith);
 		}
 		// no near rhymes either so the originally chosen word is going to 
 		// be used even though it doesn't rhyme, OR the original word is one of
 		// the rhyming words so it will be used
-		if (rhymes == null || rhymes.contains(currentWord)) {
+		if (rhymes.contains(null) || rhymes.contains(currentWord)) {
 			lastWords.push(prevWord);
 			lastWords.push(currentWord);
 			return currentWord;
