@@ -50,31 +50,32 @@ public class ExperimentalPoemMaker {
 		for (int i = 0; i < 8; i++) {
 			// Number of syllables alternates between 8 and 6 for each line
 			int syllables = 8 - i % 2 * 2;
-			// runs until the syllable max is met for the current line
 			String line = "";
+			// runs until the syllable max is met for the current line
 			while (syllables > 0) {
-				// index for the randomly chosen word
-				// runs until it finds a word whose syllables can fit into the line
-				int curSyllables = syllables + 1;
+				int curSyllables = 0;
 				int wordIndex = 0;
-				while (syllables - curSyllables < 0) {
+				boolean wordFound = false;
+				// runs until it finds a word whose syllables can fit into the line
+				while (!wordFound) {
+					// index for the randomly chosen word
 					wordIndex = r.nextInt(dictionary.size());
 					try {
 						curSyllables = Integer.parseInt(wordData.syllables(dictionary.get(wordIndex)));
+						wordFound = syllables - curSyllables < 0;
 					} catch(NumberFormatException e) { // the word is not in the wordData database
-						// makes it so the word at the current wordIndex isn't used for the poem
-						curSyllables = syllables + 1;
+						// do nothing, while loop will run again
 					}
 				}
 				// every 3rd and 4th line for each stanza the last word has to rhyme with the word
 				// two lines up
 				// Test checks if the current word is the last word of the line and checks
-				// its the 3rd or 4th stanza
+				// if its the 3rd or 4th stanza
 				if (syllables == 8 - i % 2 * 2 && i % 4 >= 2) {
 					line = " " + findWordThatRhymes(lastWords, dictionary.get(wordIndex), curSyllables);
 				} else if (syllables == 8 - i % 2 * 2) {
-					// not the 3rd or 4th stanza, but this is the last word
-					// so it needs to be taken track of for future reference
+					// not the 3rd or 4th stanza, but this is the last word of the line
+					// so it needs to be added to the stack for future reference
 					lastWords.push(dictionary.get(wordIndex));
 					line = " " + dictionary.get(wordIndex) + line;
 				} else { // a non-last word
@@ -92,7 +93,7 @@ public class ExperimentalPoemMaker {
 		}
 	}
 	
-	// Searches and returns for a word that rhymes with the second to last word in lastWords
+	// Searches and returns for a word that rhymes with the second most recent word in lastWords
 	// with the same amount of syllables as currentWord. If no such word is found, then 
 	// currentWord is returned
 	private String findWordThatRhymes(Stack<String> lastWords, String currentWord, int syllables) {
